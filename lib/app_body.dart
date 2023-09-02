@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppBody extends StatelessWidget {
-  const AppBody({Key? key}) : super(key: key);
+  final ValueNotifier<String> _inputName = ValueNotifier('');
+
+  AppBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class AppBody extends StatelessWidget {
     );
 
     final btn = ElevatedButton(
-        onPressed: () => _showSnackBar(context, nameController.text),
+        onPressed: () => _inputName.value = nameController.text,
         child: const Text('確定'));
 
     final widget = Center(
@@ -22,24 +24,29 @@ class AppBody extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
-            child: nameField,
             width: 200,
             margin: const EdgeInsets.symmetric(vertical: 10),
+            child: nameField,
           ),
-          Container(child: btn, margin: const EdgeInsets.symmetric(vertical: 10),)
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: btn,
+          ),
+          Container(
+            child: ValueListenableBuilder<String>(
+              builder: _inputNameWidgetBuilder,
+              valueListenable: _inputName,
+            ),
+          ),
         ],
       ),
     );
     return widget;
   }
+}
 
-  void _showSnackBar(BuildContext context, String msg) {
-    final snackBar = SnackBar(
-      content: Text(msg),
-      duration: const Duration(seconds: 3),
-      backgroundColor: Colors.blue,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+Widget _inputNameWidgetBuilder(
+    BuildContext context, String inputName, Widget? child) {
+  final widget = Text(inputName, style: const TextStyle(fontSize: 20));
+  return widget;
 }

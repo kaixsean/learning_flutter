@@ -9,7 +9,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appTitle = const Text('Flutter App');
-    var appBody = const AppBody();
+    var appBody = AppBody();
 
     var appBar = AppBar(title: appTitle);
 
