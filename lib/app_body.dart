@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-var trans = ['火車', '高鐵', '巴士'];
+var citites = ['倫敦', '東京', '舊金山'];
 
 class AppBody extends StatelessWidget {
-  final ValueNotifier<String> _itemName = ValueNotifier('');
-  final ValueNotifier<int> _selectedItem = ValueNotifier(-1);
+  final ValueNotifier<String> _cityName = ValueNotifier('');
+  final ValueNotifier<int> _selectedCity = ValueNotifier(0);
 
   AppBody({Key? key}) : super(key: key);
 
@@ -12,8 +12,8 @@ class AppBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final btn = ElevatedButton(
         onPressed: () {
-          _itemName.value =
-              _selectedItem.value < 0 ? '' : trans[_selectedItem.value];
+          _cityName.value =
+              _selectedCity.value < 0 ? '' : citites[_selectedCity.value];
         },
         child: const Text('確定'));
 
@@ -23,8 +23,8 @@ class AppBody extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             child: ValueListenableBuilder<int>(
-              builder: _dropdownButtonBuilder,
-              valueListenable: _selectedItem,
+              builder: _radioButtonBuilder,
+              valueListenable: _selectedCity,
             ),
           ),
           Container(
@@ -33,8 +33,8 @@ class AppBody extends StatelessWidget {
           ),
           Container(
             child: ValueListenableBuilder<String>(
-              builder: _itemNameWidgetBuilder,
-              valueListenable: _itemName,
+              builder: _cityNameWidgetBuilder,
+              valueListenable: _cityName,
             ),
           )
         ],
@@ -43,50 +43,36 @@ class AppBody extends StatelessWidget {
     return widget;
   }
 
-  Widget _itemNameWidgetBuilder(
-      BuildContext context, String itemName, Widget? child) {
+  Widget _cityNameWidgetBuilder(
+      BuildContext context, String cityName, Widget? child) {
     final widget = Text(
-      itemName,
+      cityName,
       style: const TextStyle(fontSize: 20),
     );
 
     return widget;
   }
 
-  Widget _dropdownButtonBuilder(
-      BuildContext context, int selectItem, Widget? child) {
-    final btn = DropdownButton(
-      items: <DropdownMenuItem>[
-        DropdownMenuItem(
-          value: 0,
-          child: Text(
-            trans[0],
+  Widget _radioButtonBuilder(
+      BuildContext context, int selectedItem, Widget? child) {
+    var radioItems = <RadioListTile>[];
+
+    for (var i = 0; i < citites.length; i++) {
+      radioItems.add(RadioListTile(
+          value: i,
+          groupValue: _selectedCity.value,
+          title: Text(
+            citites[i],
             style: const TextStyle(fontSize: 20),
           ),
-        ),
-        DropdownMenuItem(
-          value: 1,
-          child: Text(
-            trans[1],
-            style: const TextStyle(fontSize: 20),
-          ),
-        ),
-        DropdownMenuItem(
-          value: 2,
-          child: Text(
-            trans[2],
-            style: const TextStyle(fontSize: 20),
-          ),
-        ),
-      ],
-      onChanged: (dynamic value) => _selectedItem.value = value as int,
-      hint: const Text(
-        '請選擇交通工具',
-        style: TextStyle(fontSize: 20),
-      ),
-      value: selectItem < 0 ? null : selectItem,
+          onChanged: (value) => _selectedCity.value = value));
+    }
+
+    final wid = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: radioItems,
     );
 
-    return btn;
+    return wid;
   }
 }
