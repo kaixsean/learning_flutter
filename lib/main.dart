@@ -26,14 +26,20 @@ class MyHomePage extends StatelessWidget {
 
     var listView = ListView.separated(
         itemCount: items.length,
-        itemBuilder: (context, index) => Card(
-              child: ListTile(
-                title: Text(
-                  items[index],
-                  style: const TextStyle(fontSize: 20),
-                ),
-                onTap: () => _selectedItem.value = '點選' + items[index],
+        itemBuilder: (context, index) => InkWell(
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
+                    child: Text(
+                      items[index],
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  )
+                ],
               ),
+              onTap: () => _selectedItem.value = '點選' + items[index],
             ),
         separatorBuilder: (context, index) => const Divider());
 
