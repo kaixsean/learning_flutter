@@ -25,13 +25,17 @@ class MyHomePage extends StatelessWidget {
     const items = <String>['第一項', '第二項', '第三項'];
 
     var listView = ListView.separated(
-      itemCount: items.length,
-      itemBuilder: (context, index) => ListTile(
-        title: Text(items[index], style: const TextStyle(fontSize: 20),),
-        onTap: () => _selectedItem.value = '點選' + items[index],
-      ),
-      separatorBuilder: (context, index) => const Divider()
-    );
+        itemCount: items.length,
+        itemBuilder: (context, index) => Card(
+              child: ListTile(
+                title: Text(
+                  items[index],
+                  style: const TextStyle(fontSize: 20),
+                ),
+                onTap: () => _selectedItem.value = '點選' + items[index],
+              ),
+            ),
+        separatorBuilder: (context, index) => const Divider());
 
     final widget = Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
