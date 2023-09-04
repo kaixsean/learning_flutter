@@ -16,56 +16,41 @@ class App extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final ValueNotifier<String> _selectedItem = ValueNotifier('');
+  final ValueNotifier<List<String>> _listItems =
+      ValueNotifier(<String>['1', '2', '3']);
 
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(title: const Text('ListView 範例'));
 
-    const items = <String>['第一項', '第二項', '第三項'];
-
-    var listView = ListView.separated(
-        itemCount: items.length,
-        itemBuilder: (context, index) => InkWell(
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 15),
-                    child: Text(
-                      items[index],
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  )
-                ],
-              ),
-              onTap: () => _selectedItem.value = '點選' + items[index],
-            ),
-        separatorBuilder: (context, index) => const Divider());
-
-    final widget = Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        children: <Widget>[
-          ValueListenableBuilder<String>(
-              valueListenable: _selectedItem, builder: _selectedItemBuilder),
-          Expanded(child: listView)
-        ],
-      ),
-    );
+    final widget = ValueListenableBuilder<List<String>>(
+        valueListenable: _listItems, builder: _listViewBuilder);
 
     final appHomePage = Scaffold(appBar: appBar, body: widget);
 
     return appHomePage;
   }
 
-  Widget _selectedItemBuilder(
-      BuildContext context, String itemName, Widget? child) {
-    final widget = Text(
-      itemName,
-      style: const TextStyle(fontSize: 20),
-    );
+  Widget _listViewBuilder(
+      BuildContext context, List<String> listItems, Widget? child) {
+    final listView = ListView.separated(
+        itemCount: listItems.length,
+        itemBuilder: (context, index) => ListTile(
+              title: Text(
+                listItems[index],
+                style: const TextStyle(fontSize: 20),
+              ),
+              onTap: () {
+                _listItems.value.add((_listItems.value.length + 1).toString());
+                _listItems.value = List.from(_listItems.value);
+              },
+              onLongPress: () {
+                _listItems.value.removeAt(index);
+                _listItems.value = List.from(_listItems.value);
+              },
+            ),
+        separatorBuilder: (context, index) => const Divider());
 
-    return widget;
+    return listView;
   }
 }
