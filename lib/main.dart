@@ -16,41 +16,46 @@ class App extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final ValueNotifier<List<String>> _listItems =
-      ValueNotifier(<String>['1', '2', '3']);
-
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(title: const Text('ListView 範例'));
 
-    final widget = ValueListenableBuilder<List<String>>(
-        valueListenable: _listItems, builder: _listViewBuilder);
+    var items = <String>['1', '2', '3'];
+    var itemsLastNum = items.length;
+    final GlobalKey<AnimatedListState> itemMenuKey = GlobalKey();
+
+    final widget = AnimatedList(
+        key: itemMenuKey,
+        initialItemCount: items.length,
+        itemBuilder: (context, index, animation) => SizeTransition(
+              sizeFactor: animation,
+              child: ListTile(
+                title: Text(
+                  items[index],
+                  style: const TextStyle(fontSize: 20),
+                ),
+                onTap: () {
+                  items.add((++itemsLastNum).toString());
+                  itemMenuKey.currentState?.insertItem(items.length - 1);
+                },
+                onLongPress: () {
+                  var removeItem = items.removeAt(index);
+                  var builder = (context, animation) => SizeTransition(
+                        sizeFactor: animation,
+                        child: ListTile(
+                          title: Text(
+                            removeItem,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      );
+                  itemMenuKey.currentState?.removeItem(index, builder);
+                },
+              ),
+            ));
 
     final appHomePage = Scaffold(appBar: appBar, body: widget);
 
     return appHomePage;
-  }
-
-  Widget _listViewBuilder(
-      BuildContext context, List<String> listItems, Widget? child) {
-    final listView = ListView.separated(
-        itemCount: listItems.length,
-        itemBuilder: (context, index) => ListTile(
-              title: Text(
-                listItems[index],
-                style: const TextStyle(fontSize: 20),
-              ),
-              onTap: () {
-                _listItems.value.add((_listItems.value.length + 1).toString());
-                _listItems.value = List.from(_listItems.value);
-              },
-              onLongPress: () {
-                _listItems.value.removeAt(index);
-                _listItems.value = List.from(_listItems.value);
-              },
-            ),
-        separatorBuilder: (context, index) => const Divider());
-
-    return listView;
   }
 }
