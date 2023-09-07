@@ -32,10 +32,10 @@ class MyHomePage extends StatelessWidget {
                         Animation<double> animation,
                         Animation<double> secondaryAnimation,
                         Widget child) =>
-                    SlideTransition(
-                      position:
-                          Tween(begin: const Offset(1, 0), end: Offset.zero)
-                              .animate(animation),
+                    ScaleTransition(
+                      scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                          CurvedAnimation(
+                              parent: animation, curve: Curves.fastOutSlowIn)),
                       child: child,
                     ))),
         child: const Text('開啟第二頁'));
