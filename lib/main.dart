@@ -36,7 +36,16 @@ class MyHomePage extends StatelessWidget {
                       scale: Tween<double>(begin: 0.0, end: 1.0).animate(
                           CurvedAnimation(
                               parent: animation, curve: Curves.fastOutSlowIn)),
-                      child: child,
+                      child: RotationTransition(
+                        turns: Tween<double>(
+                          begin: 0.0,
+                          end: 1.0,
+                        ).animate(
+                          CurvedAnimation(
+                              parent: animation, curve: Curves.linear),
+                        ),
+                        child: child,
+                      ),
                     ))),
         child: const Text('開啟第二頁'));
 
