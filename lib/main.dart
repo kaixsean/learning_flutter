@@ -23,7 +23,21 @@ class MyHomePage extends StatelessWidget {
 
     final btn = ElevatedButton(
         onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SecondPage())),
+            context,
+            PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation<double> animation,
+                        Animation<double> secondaryAnimation) =>
+                    SecondPage(),
+                transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) =>
+                    SlideTransition(
+                      position:
+                          Tween(begin: const Offset(1, 0), end: Offset.zero)
+                              .animate(animation),
+                      child: child,
+                    ))),
         child: const Text('開啟第二頁'));
 
     final widget = Container(
