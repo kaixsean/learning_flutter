@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/second_page.dart';
 
 void main() => runApp(const App());
 
@@ -18,41 +19,18 @@ class App extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(title: const Text('ListView 範例'));
+    final appBar = AppBar(title: const Text('切換頁面'));
 
-    var items = <String>['1', '2', '3'];
-    var itemsLastNum = items.length;
-    final GlobalKey<AnimatedListState> itemMenuKey = GlobalKey();
+    final btn = ElevatedButton(
+        onPressed: () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SecondPage())),
+        child: const Text('開啟第二頁'));
 
-    final widget = AnimatedList(
-        key: itemMenuKey,
-        initialItemCount: items.length,
-        itemBuilder: (context, index, animation) => SizeTransition(
-              sizeFactor: animation,
-              child: ListTile(
-                title: Text(
-                  items[index],
-                  style: const TextStyle(fontSize: 20),
-                ),
-                onTap: () {
-                  items.add((++itemsLastNum).toString());
-                  itemMenuKey.currentState?.insertItem(items.length - 1);
-                },
-                onLongPress: () {
-                  var removeItem = items.removeAt(index);
-                  var builder = (context, animation) => SizeTransition(
-                        sizeFactor: animation,
-                        child: ListTile(
-                          title: Text(
-                            removeItem,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      );
-                  itemMenuKey.currentState?.removeItem(index, builder);
-                },
-              ),
-            ));
+    final widget = Container(
+      alignment: Alignment.topCenter,
+      padding: const EdgeInsets.all(30),
+      child: btn,
+    );
 
     final appHomePage = Scaffold(appBar: appBar, body: widget);
 
