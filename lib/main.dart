@@ -16,21 +16,38 @@ class App extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  final ValueNotifier<int?> _dlgResult = ValueNotifier(null);
+
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(title: const Text('對話盒範例'));
 
     var btn = ElevatedButton(
-        onPressed: () => _showDialog(context),
+        onPressed: () async {
+          var ans = await _showDialog(context);
+          _dlgResult.value = ans;
+        },
         child: const Text(
           '顯示對話盒',
           style: TextStyle(fontSize: 20),
         ));
 
-    final widget = Container(
-      alignment: Alignment.topCenter,
-      margin: const EdgeInsets.all(20),
-      child: btn,
+    final widget = Center(
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: btn,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: ValueListenableBuilder<int?>(
+              builder: _showDlgResult,
+              valueListenable: _dlgResult,
+            ),
+          )
+        ],
+      ),
     );
 
     final appHomePage = Scaffold(
@@ -41,16 +58,34 @@ class MyHomePage extends StatelessWidget {
     return appHomePage;
   }
 
-  _showDialog(BuildContext context) {
+  _showDialog(BuildContext context) async {
     var dlg = AlertDialog(
-      title: const Text('對話和標題'),
-      content: const Text('對話盒文字'),
+      content: const Text('程式結束前是否要儲存檔案'),
+      contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      contentTextStyle: const TextStyle(color: Colors.indigo, fontSize: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       actions: <Widget>[
         TextButton(
-            onPressed: () => Navigator.pop(context), child: const Text("OK"))
+            onPressed: () => Navigator.pop(context, 1), child: const Text("是")),
+        TextButton(
+            onPressed: () => Navigator.pop(context, 0), child: const Text("否")),
+        TextButton(
+            onPressed: () => Navigator.pop(context, -1),
+            child: const Text("取消"))
       ],
     );
 
-    showDialog(context: context, builder: (context) => dlg);
+    var ans = showDialog(context: context, builder: (context) => dlg);
+
+    return ans;
+  }
+
+  Widget _showDlgResult(BuildContext context, int? result, Widget? child) {
+    final widget = Text(
+      result == null ? '' : result.toString(),
+      style: const TextStyle(fontSize: 20),
+    );
+
+    return widget;
   }
 }
