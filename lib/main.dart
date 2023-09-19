@@ -16,7 +16,10 @@ class App extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final ValueNotifier<int?> _dlgResult = ValueNotifier(null);
+  static const _cities = ['倫敦', '東京', '舊金山'];
+
+  final ValueNotifier<String> _dlgResult = ValueNotifier('');
+  final ValueNotifier<int?> _selectedCity = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +44,7 @@ class MyHomePage extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
-            child: ValueListenableBuilder<int?>(
+            child: ValueListenableBuilder<String>(
               builder: _showDlgResult,
               valueListenable: _dlgResult,
             ),
@@ -60,18 +63,30 @@ class MyHomePage extends StatelessWidget {
 
   _showDialog(BuildContext context) async {
     var dlg = AlertDialog(
-      content: const Text('程式結束前是否要儲存檔案'),
+      content: ValueListenableBuilder<int?>(
+        builder: _cityOptionsBuilder,
+        valueListenable: _selectedCity,
+      ),
       contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       contentTextStyle: const TextStyle(color: Colors.indigo, fontSize: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       actions: <Widget>[
         TextButton(
-            onPressed: () => Navigator.pop(context, 1), child: const Text("是")),
+            onPressed: () => Navigator.pop(context, ''),
+            child: const Text(
+              "取消",
+              style: TextStyle(color: Colors.red, fontSize: 20),
+            )),
         TextButton(
-            onPressed: () => Navigator.pop(context, 0), child: const Text("否")),
-        TextButton(
-            onPressed: () => Navigator.pop(context, -1),
-            child: const Text("取消"))
+            onPressed: () => Navigator.pop(
+                context,
+                _selectedCity.value == null
+                    ? ''
+                    : _cities[_selectedCity.value!]),
+            child: const Text(
+              "確定",
+              style: TextStyle(color: Colors.blue, fontSize: 20),
+            )),
       ],
     );
 
@@ -80,12 +95,35 @@ class MyHomePage extends StatelessWidget {
     return ans;
   }
 
-  Widget _showDlgResult(BuildContext context, int? result, Widget? child) {
+  Widget _showDlgResult(BuildContext context, String? result, Widget? child) {
     final widget = Text(
       result == null ? '' : result.toString(),
       style: const TextStyle(fontSize: 20),
     );
 
     return widget;
+  }
+
+  Widget _cityOptionsBuilder(
+      BuildContext context, int? selectedItem, Widget? child) {
+    var radioItems = <RadioListTile>[];
+
+    for (var i = 0; i < _cities.length; i++) {
+      radioItems.add(RadioListTile(
+          value: i,
+          groupValue: selectedItem,
+          title: Text(
+            _cities[i],
+            style: const TextStyle(fontSize: 20),
+          ),
+          onChanged: (value) => _selectedCity.value = value));
+    }
+
+    final wid = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: radioItems,
+    );
+
+    return wid;
   }
 }
