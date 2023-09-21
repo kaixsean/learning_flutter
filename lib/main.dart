@@ -62,23 +62,47 @@ class MyHomePage extends StatelessWidget {
   }
 
   _showDialog(BuildContext context) async {
-    var dlg = SimpleDialog(
-      title: const Text('程式結束前是否要儲存檔案'),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    final btnOk = ElevatedButton(
+        onPressed: () => Navigator.pop(context, ''),
+        child: const Text(
+          '確定',
+          style: TextStyle(fontSize: 20),
+        ));
+    final btnCancel = ElevatedButton(
+        onPressed: () => Navigator.pop(context,
+            _selectedCity.value == null ? '' : _cities[_selectedCity.value!]),
+        child: const Text(
+          '確定',
+          style: TextStyle(fontSize: 20),
+        ));
+    final btns = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        SimpleDialogOption(
-          child: const Text('是', style: TextStyle(fontSize: 20),),
-          onPressed: () => Navigator.pop(context, 1),
-        ),
-        SimpleDialogOption(
-          child: const Text('否', style: TextStyle(fontSize: 20),),
-          onPressed: () => Navigator.pop(context, 0),
-        ),
-        SimpleDialogOption(
-          child: const Text('取消', style: TextStyle(fontSize: 20),),
-          onPressed: () => Navigator.pop(context, -1),
-        )
+        Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(10, 0, 5, 5),
+              child: btnCancel,
+            )),
+        Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+              child: btnOk,
+            ))
       ],
+    );
+
+    var dlg = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ValueListenableBuilder<int?>(
+              valueListenable: _selectedCity, builder: _cityOptionsBuilder),
+          btns,
+        ],
+      ),
     );
 
     var ans = showDialog(context: context, builder: (context) => dlg);
