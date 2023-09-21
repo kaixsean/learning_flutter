@@ -62,35 +62,52 @@ class MyHomePage extends StatelessWidget {
   }
 
   _showDialog(BuildContext context) async {
-    var dlg = AlertDialog(
-      content: ValueListenableBuilder<int?>(
-        builder: _cityOptionsBuilder,
-        valueListenable: _selectedCity,
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      contentTextStyle: const TextStyle(color: Colors.indigo, fontSize: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      actions: <Widget>[
-        TextButton(
-            onPressed: () => Navigator.pop(context, ''),
-            child: const Text(
-              "取消",
-              style: TextStyle(color: Colors.red, fontSize: 20),
+    final btnOk = ElevatedButton(
+        onPressed: () => Navigator.pop(context, ''),
+        child: const Text(
+          '取消',
+          style: TextStyle(fontSize: 20),
+        ));
+    final btnCancel = ElevatedButton(
+        onPressed: () => Navigator.pop(context,
+            _selectedCity.value == null ? '' : _cities[_selectedCity.value!]),
+        child: const Text(
+          '確定',
+          style: TextStyle(fontSize: 20),
+        ));
+    final btns = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(10, 0, 5, 5),
+              child: btnCancel,
             )),
-        TextButton(
-            onPressed: () => Navigator.pop(
-                context,
-                _selectedCity.value == null
-                    ? ''
-                    : _cities[_selectedCity.value!]),
-            child: const Text(
-              "確定",
-              style: TextStyle(color: Colors.blue, fontSize: 20),
-            )),
+        Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+              child: btnOk,
+            ))
       ],
     );
 
-    var ans = showDialog(context: context, builder: (context) => dlg);
+    var dlg = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ValueListenableBuilder<int?>(
+              valueListenable: _selectedCity, builder: _cityOptionsBuilder),
+          btns,
+        ],
+      ),
+    );
+
+    var willPopScope = WillPopScope(child: dlg, onWillPop: () async => false);
+
+    var ans = showDialog(context: context, builder: (context) => willPopScope);
 
     return ans;
   }
