@@ -62,31 +62,22 @@ class MyHomePage extends StatelessWidget {
   }
 
   _showDialog(BuildContext context) async {
-    var dlg = AlertDialog(
-      content: ValueListenableBuilder<int?>(
-        builder: _cityOptionsBuilder,
-        valueListenable: _selectedCity,
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      contentTextStyle: const TextStyle(color: Colors.indigo, fontSize: 20),
+    var dlg = SimpleDialog(
+      title: const Text('程式結束前是否要儲存檔案'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      actions: <Widget>[
-        TextButton(
-            onPressed: () => Navigator.pop(context, ''),
-            child: const Text(
-              "取消",
-              style: TextStyle(color: Colors.red, fontSize: 20),
-            )),
-        TextButton(
-            onPressed: () => Navigator.pop(
-                context,
-                _selectedCity.value == null
-                    ? ''
-                    : _cities[_selectedCity.value!]),
-            child: const Text(
-              "確定",
-              style: TextStyle(color: Colors.blue, fontSize: 20),
-            )),
+      children: <Widget>[
+        SimpleDialogOption(
+          child: const Text('是', style: TextStyle(fontSize: 20),),
+          onPressed: () => Navigator.pop(context, 1),
+        ),
+        SimpleDialogOption(
+          child: const Text('否', style: TextStyle(fontSize: 20),),
+          onPressed: () => Navigator.pop(context, 0),
+        ),
+        SimpleDialogOption(
+          child: const Text('取消', style: TextStyle(fontSize: 20),),
+          onPressed: () => Navigator.pop(context, -1),
+        )
       ],
     );
 
