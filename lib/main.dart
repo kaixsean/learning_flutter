@@ -65,7 +65,7 @@ class MyHomePage extends StatelessWidget {
     final btnOk = ElevatedButton(
         onPressed: () => Navigator.pop(context, ''),
         child: const Text(
-          '確定',
+          '取消',
           style: TextStyle(fontSize: 20),
         ));
     final btnCancel = ElevatedButton(
@@ -105,7 +105,9 @@ class MyHomePage extends StatelessWidget {
       ),
     );
 
-    var ans = showDialog(context: context, builder: (context) => dlg);
+    var willPopScope = WillPopScope(child: dlg, onWillPop: () async => false);
+
+    var ans = showDialog(context: context, builder: (context) => willPopScope);
 
     return ans;
   }
