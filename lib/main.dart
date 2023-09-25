@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(const App());
 
@@ -23,7 +24,13 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(title: const Text('對話盒範例'));
+    final appBar = AppBar(
+      title: const Text('對話盒範例'),
+      centerTitle: false,
+      backgroundColor: Colors.brown,
+      elevation: 10,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+    );
 
     var btn = ElevatedButton(
         onPressed: () async {
