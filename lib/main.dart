@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(const App());
 
@@ -20,20 +21,103 @@ class MyHomePage extends StatelessWidget {
 
   final ValueNotifier<String> _dlgResult = ValueNotifier('');
   final ValueNotifier<int?> _selectedCity = ValueNotifier(null);
+  final ValueNotifier<String> _msg = ValueNotifier('');
 
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(title: const Text('對話盒範例'));
+    final btn = IconButton(
+      onPressed: () => _msg.value = '你按下手機按鈕',
+      icon: const Icon(
+        Icons.phone_android,
+        color: Colors.white,
+      ),
+      color: Colors.blue,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    );
 
-    var btn = ElevatedButton(
-        onPressed: () async {
-          var ans = await _showDialog(context);
-          _dlgResult.value = ans;
-        },
-        child: const Text(
-          '顯示對話盒',
-          style: TextStyle(fontSize: 20),
-        ));
+    final menu = PopupMenuButton(
+      itemBuilder: (context) {
+        return <PopupMenuEntry>[
+          const PopupMenuItem(
+            value: 1,
+            child: Text(
+              '第一項',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          const PopupMenuDivider(),
+          const PopupMenuItem(
+            value: 2,
+            child: Text(
+              '第二項',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+        ];
+      },
+      onSelected: (value) {
+        switch (value) {
+          case 1:
+            _msg.value = '第一項';
+            break;
+          case 2:
+            _msg.value = '第二項';
+            break;
+        }
+      },
+    );
+
+    final drawer = Drawer(
+      child: ListView(
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(color: Colors.blue),
+            child: Text(
+              'Drawer 標題',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          ListTile(
+            title: const Text(
+              '選項一',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _msg.value = '選項一';
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(
+              '選項二',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _msg.value = '選項二';
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(
+              '選項三',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _msg.value = '選項三';
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+
+    final appBar = AppBar(
+      title: const Text('對話盒範例'),
+      centerTitle: false,
+      backgroundColor: Colors.brown,
+      elevation: 10,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+    );
 
     final widget = Center(
       child: Column(
@@ -55,10 +139,22 @@ class MyHomePage extends StatelessWidget {
 
     final appHomePage = Scaffold(
       appBar: appBar,
-      body: widget,
+      body: ValueListenableBuilder<String>(
+        builder: _showMsg,
+        valueListenable: _msg,
+      ),
+      drawer: drawer,
     );
 
     return appHomePage;
+  }
+
+  Widget _showMsg(BuildContext context, String msg, Widget? child) {
+    final widget = Text(
+      msg,
+      style: const TextStyle(fontSize: 20),
+    );
+    return widget;
   }
 
   _showDialog(BuildContext context) async {
