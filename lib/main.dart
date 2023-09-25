@@ -67,14 +67,52 @@ class MyHomePage extends StatelessWidget {
       },
     );
 
+    final drawer = Drawer(
+      child: ListView(
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(color: Colors.blue),
+            child: Text(
+              'Drawer 標題',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          ListTile(
+            title: const Text(
+              '選項一',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _msg.value = '選項一';
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(
+              '選項二',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _msg.value = '選項二';
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(
+              '選項三',
+              style: TextStyle(fontSize: 20),
+            ),
+            onTap: () {
+              _msg.value = '選項三';
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+
     final appBar = AppBar(
       title: const Text('對話盒範例'),
-      leading: InkWell(
-        child: const Icon(Icons.menu),
-        onTap: () => _msg.value = '你按下選單按鈕',
-      ),
-      automaticallyImplyLeading: false,
-      actions: <Widget>[btn, menu],
       centerTitle: false,
       backgroundColor: Colors.brown,
       elevation: 10,
@@ -105,6 +143,7 @@ class MyHomePage extends StatelessWidget {
         builder: _showMsg,
         valueListenable: _msg,
       ),
+      drawer: drawer,
     );
 
     return appHomePage;
