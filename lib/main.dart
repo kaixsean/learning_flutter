@@ -25,6 +25,48 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final btn = IconButton(
+      onPressed: () => _msg.value = '你按下手機按鈕',
+      icon: const Icon(
+        Icons.phone_android,
+        color: Colors.white,
+      ),
+      color: Colors.blue,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    );
+
+    final menu = PopupMenuButton(
+      itemBuilder: (context) {
+        return <PopupMenuEntry>[
+          const PopupMenuItem(
+            value: 1,
+            child: Text(
+              '第一項',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          const PopupMenuDivider(),
+          const PopupMenuItem(
+            value: 2,
+            child: Text(
+              '第二項',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+        ];
+      },
+      onSelected: (value) {
+        switch (value) {
+          case 1:
+            _msg.value = '第一項';
+            break;
+          case 2:
+            _msg.value = '第二項';
+            break;
+        }
+      },
+    );
+
     final appBar = AppBar(
       title: const Text('對話盒範例'),
       leading: InkWell(
@@ -32,21 +74,12 @@ class MyHomePage extends StatelessWidget {
         onTap: () => _msg.value = '你按下選單按鈕',
       ),
       automaticallyImplyLeading: false,
+      actions: <Widget>[btn, menu],
       centerTitle: false,
       backgroundColor: Colors.brown,
       elevation: 10,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
-
-    var btn = ElevatedButton(
-        onPressed: () async {
-          var ans = await _showDialog(context);
-          _dlgResult.value = ans;
-        },
-        child: const Text(
-          '顯示對話盒',
-          style: TextStyle(fontSize: 20),
-        ));
 
     final widget = Center(
       child: Column(
@@ -78,7 +111,10 @@ class MyHomePage extends StatelessWidget {
   }
 
   Widget _showMsg(BuildContext context, String msg, Widget? child) {
-    final widget = Text(msg,style: const TextStyle(fontSize: 20),);
+    final widget = Text(
+      msg,
+      style: const TextStyle(fontSize: 20),
+    );
     return widget;
   }
 
