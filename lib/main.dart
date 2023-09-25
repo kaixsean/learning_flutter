@@ -21,11 +21,17 @@ class MyHomePage extends StatelessWidget {
 
   final ValueNotifier<String> _dlgResult = ValueNotifier('');
   final ValueNotifier<int?> _selectedCity = ValueNotifier(null);
+  final ValueNotifier<String> _msg = ValueNotifier('');
 
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
       title: const Text('對話盒範例'),
+      leading: InkWell(
+        child: const Icon(Icons.menu),
+        onTap: () => _msg.value = '你按下選單按鈕',
+      ),
+      automaticallyImplyLeading: false,
       centerTitle: false,
       backgroundColor: Colors.brown,
       elevation: 10,
@@ -62,10 +68,18 @@ class MyHomePage extends StatelessWidget {
 
     final appHomePage = Scaffold(
       appBar: appBar,
-      body: widget,
+      body: ValueListenableBuilder<String>(
+        builder: _showMsg,
+        valueListenable: _msg,
+      ),
     );
 
     return appHomePage;
+  }
+
+  Widget _showMsg(BuildContext context, String msg, Widget? child) {
+    final widget = Text(msg,style: const TextStyle(fontSize: 20),);
+    return widget;
   }
 
   _showDialog(BuildContext context) async {
